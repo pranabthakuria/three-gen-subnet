@@ -67,6 +67,7 @@ async def generate_video(
     #print(f"[INFO] models: {models}")
     print(f"[INFO] len models: {len(models)}")
     print(f"[INFO] models: {models[0]}")
+
     start_time1 = time()
     gaussian_processor = GaussianProcessor.GaussianProcessor(opt, prompt)
     start_time2 = time()
