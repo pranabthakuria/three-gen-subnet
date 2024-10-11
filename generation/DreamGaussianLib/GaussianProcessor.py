@@ -421,12 +421,14 @@ class GaussianProcessor:
         return self.__renderer.gaussians
 
     def train(self, models: list, iters=500):
+        iters = 650
+        print(f"[INFO] models 0: {models[0]}")
+        self._prepare_training_model(models)
         if iters > 0:
-            self._prepare_training_model(models)
             for i in tqdm.trange(iters):
                 self._train_step()
 
             # do a last prune
-            self.__renderer.gaussians.prune(min_opacity=0.01, extent=1, max_screen_size=1)
+            self.__renderer.gaussians.prune(min_opacity=0.1, extent=1, max_screen_size=1)
 
         return self.get_gs_model_data()

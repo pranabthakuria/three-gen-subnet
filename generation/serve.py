@@ -57,18 +57,28 @@ async def generate(
 
 @app.post("/generate_video/")
 async def generate_video(
-    prompt: str = Form(),
-    video_res: int = Form(1088),
-    opt: OmegaConf = Depends(get_config),
-    models: list = Depends(get_models),
+        prompt: str = Form(),
+        video_res: int = Form(1088),
+        opt: OmegaConf = Depends(get_config),
+        models: list = Depends(get_models),
 ):
     start_time = time()
+    print(f"[INFO] video_res: {video_res}")
+    #print(f"[INFO] models: {models}")
+    start_time1 = time()
     gaussian_processor = GaussianProcessor.GaussianProcessor(opt, prompt)
+    start_time2 = time()
+    print(f"[INFO] gaussian_processor time: {(start_time2 - start_time1) / 60.0} min")
+    print(f"[INFO] opt: {opt}")
+    print(f"[INFO] prompt: {prompt}")
     processed_data = gaussian_processor.train(models, opt.iters)
-    print(f"[INFO] It took: {(time() - start_time) / 60.0} min")
+    start_time3 = time()
+    print(f"[INFO] processed_data time: {(start_time3 - start_time2) / 60.0} min")
+    print(f"[INFO] Total time It took: {(time() - start_time) / 60.0} min")
 
     video_utils = VideoUtils(video_res, video_res, 5, 5, 10, -30, 10)
     buffer = video_utils.render_video(*processed_data)
+    start_time4 = time()
 
     return StreamingResponse(content=buffer, media_type="video/mp4")
 
